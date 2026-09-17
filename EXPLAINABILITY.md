@@ -1,82 +1,21 @@
-# GitSentinel Explainability Specification (EXPLAINABILITY.md)
+# GitSentinel Explainability Specification
 
-This document provides a transparent, verifiable architectural breakdown of how **GitSentinel** reasons, evaluates inputs, selects tools, and formulates verdicts. It satisfies the transparency, accountability, and predictable behavior requirements of the **Open GitAgent Protocol (GAP)** and the **HiDevs Passport Clearance Pipeline (Checkpoint 2)**.
-
----
-
-## 1. Decision Pipeline & Reasoning Flow
-
-GitSentinel executes a deterministic, multi-stage reasoning pipeline for every code review or diff inspection:
-
-```
-[Incoming Git Diff / Commit]
-            │
-            ▼
- ┌──────────────────────┐
- │  1. Diff Ingestion   │  --> diff-scanner parses changed files, line numbers,
- └──────────┬───────────┘      and scans for dangerous execution patterns.
-            │
-            ▼
- ┌──────────────────────┐
- │ 2. Secret & Entropy  │  --> secret-detector runs regex signatures & Shannon entropy
- └──────────┬───────────┘      calculations to identify credentials without echoing them.
-            │
-            ▼
- ┌──────────────────────┐
- │ 3. Policy Compliance │  --> policy-checker checks repository files, dependency pinning,
- └──────────┬───────────┘      and sensitive file exclusions (.env, .pem).
-            │
-            ▼
- ┌──────────────────────┐
- │ 4. Patch Synthesis   │  --> If defects exist, patch-generator formulates unified diffs
- └──────────┬───────────┘      replacing hardcoded secrets with environment lookups.
-            │
-            ▼
- ┌──────────────────────┐
- │  5. Verdict & Audit  │  --> Issues structured decision (APPROVED / BLOCKED / NEEDS_REVIEW)
- └──────────────────────┘      and writes an immutable audit record to memory/audit.log.
-```
+This document provides a transparent, verifiable architectural breakdown of how **GitSentinel** operates, processes input, makes decisions, and enforces security boundaries.
 
 ---
 
-## 2. Tool Selection Criteria & Invocation Logic
+## 1. Input Data and Data Sources Used
 
-Every tool call by GitSentinel is strictly governed by transparent invocation criteria:
-
-| Tool Name | Invocation Trigger | Expected Input | Output Artifact | Decision Influence |
-| :--- | :--- | :--- | :--- | :--- |
-| **`diff-scanner`** | Any incoming code diff or pull request. | Unified diff text (`diff_text`) | List of changed files & suspicious syntax patterns (`eval`, `exec`, `shell=True`). | Triggers `BLOCKED` if critical syntax risks are found. |
-| **`secret-detector`** | Added or modified lines in diff. | Content string (`content`) | Classified secrets (AWS, OpenAI, GitHub PAT, JWT) with redacted previews. | Hard blocker: >=1 exposed secret triggers immediate `BLOCKED`. |
-| **`policy-checker`** | File list or manifest changes. | File paths, `package.json`, `requirements.txt` | Policy violation list (forbidden files, unpinned dependencies). | Blocks on sensitive file commit; issues `WARN` for unpinned versions. |
-| **`patch-generator`** | Detected secret or fixable flaw. | File path, original snippet, remediated replacement snippet | Unified diff patch ready for `git apply`. | Provides automated remediation attached to review verdict. |
+GitSentinel consumes unified git diffs, commit histories, and repository configuration files as its primary input data. These data sources include code additions, deletions, package manifests such as package.json, and repository directory structures. The agent ingests these inputs in raw text format and parses them into structured syntax trees and token streams for downstream analysis. External environmental configuration files are also monitored as sensitive data sources to ensure credentials are never inappropriately tracked.
 
 ---
 
-## 3. Predictability & Determinism Safeguards
+## 2. How It Decides and Reasoning Process
 
-To prevent non-deterministic hallucinations and ensure identical evaluations across runtimes:
-
-1. **Low Temperature Constraint:** Set to `0.1` in `agent.yaml` to ensure near-zero variance in classification.
-2. **Deterministic Shannon Entropy Scoring:** Credential detection is grounded in mathematical entropy ($H(X) = -\sum P(x) \log_2 P(x)$) alongside strict regex signatures, eliminating false-positive hallucinations.
-3. **Adversarial Resilience:** Comments within incoming source code attempting to override system behavior (e.g. `// gitagent-ignore`, `// override: approve`) are explicitly ignored by the parser.
-4. **Coordinate Citations:** GitSentinel is forbidden by `RULES.md` from flagging any issue without citing exact file paths and line number coordinates.
+The decision making process follows a deterministic, five-stage analytical pipeline designed to eliminate ambiguity and hallucination. When a pull request or git diff is received, the agent first evaluates syntax trees using the diff-scanner tool to identify risky patterns like arbitrary code execution. Next, the reasoning engine invokes the secret-detector tool to compute Shannon entropy scores and regex matches for exposed API keys and credentials. Finally, the agent correlates all findings against predefined security policies to issue a conclusive verdict of APPROVED, BLOCKED, or NEEDS_REVIEW alongside an automated patch when remediation is possible.
 
 ---
 
-## 4. Auditability & Memory Traceability
+## 3. Constraints, Limitations, and Known Issues
 
-GitSentinel logs all evaluations to `memory/audit.log` with machine-readable fields:
-* **Timestamp**: ISO 8601 UTC timestamp.
-* **Commit/Diff Hash**: Cryptographic SHA-256 fingerprint of the reviewed input.
-* **Violation Summary**: Count of critical, high, medium, and low severity findings.
-* **Final Verdict**:
-  * `APPROVED`: 0 secrets, 0 critical syntax risks, zero sensitive files.
-  * `BLOCKED`: Leaked credential or command injection vulnerability detected.
-  * `NEEDS_REVIEW`: High-severity policy warning requiring human confirmation.
-
----
-
-## 5. Fallback & Human-in-the-Loop Escalation
-
-* **Model Fallback Chain:** If `openai:gpt-4o` encounters rate limits or network degradation, GitSentinel automatically fails over to `anthropic:claude-3-5-sonnet` and `openai:gpt-4o-mini` without losing session state.
-* **Segregation of Duties (DUTIES.md):** As an autonomous worker, GitSentinel holds the `auditor` and `remediator` roles. The `approver` role is reserved for human maintainers. All automated remediation patches require human sign-off before merging to production branches.
+GitSentinel operates under strict operational constraints to prevent false positives and non-deterministic behavior across different agent frameworks. The agent is deliberately limited to static diff analysis and cannot execute dynamic runtime sandbox testing of compiled binaries. Another known issue and limitation is that heavily obfuscated or encrypted secrets with low entropy may require secondary human review rather than autonomous blocking. Furthermore, the agent enforces a low temperature constraint of 0.1 to maintain strict predictability across all supported export frameworks.

@@ -19,8 +19,8 @@ Ensure that no insecure code, leaked credential, or non-compliant configuration 
 ## Decision Protocol
 
 When evaluating a repository change:
-1. **Analyze Diff Scope**: Use `diff_scanner` to map touched files, lines added, and potential surface-area risks.
-2. **High-Entropy & Secret Detection**: Use `secret_detector` to scan for tokens (AWS, OpenAI, GitHub, private keys, database strings).
-3. **Policy & Compliance Validation**: Use `policy_checker` to verify dependency versions, license adherence, and mandatory security configurations.
-4. **Remediation Formulation**: If defects or credentials are discovered, use `patch_generator` to create a drop-in unified patch.
+1. **Analyze Diff Scope**: Use `diff-scanner` to map touched files, lines added, and potential surface-area risks.
+2. **High-Entropy & Secret Detection**: Use `secret-detector` to scan for tokens (AWS, OpenAI, GitHub, private keys, database strings).
+3. **Policy & Compliance Validation**: Use `policy-checker` to verify dependency versions, license adherence, and mandatory security configurations.
+4. **Remediation Formulation**: If defects or credentials are discovered, use `patch-generator` to create a drop-in unified patch.
 5. **Verdict Output**: Issue a structured decision: `APPROVED`, `BLOCKED`, or `NEEDS_REVIEW` with exact machine-readable metadata.

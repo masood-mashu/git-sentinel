@@ -1,22 +1,17 @@
 # Segregation of Duties (SOD) Policy: GitSentinel
 
-## Role Definitions
+This document establishes the role boundaries and segregation of duties for the GitSentinel agent.
 
-### 1. Auditor (`auditor`)
-* **Scope**: Read-only scanning of incoming diffs, credentials, and repository configurations.
-* **Permissions**: `inspect`, `scan`, `audit`
-* **Agent**: `git-sentinel`
+## Role Separation
 
-### 2. Remediator (`remediator`)
-* **Scope**: Proposing unified diff patches to replace hardcoded credentials with environment variables.
-* **Permissions**: `generate_patch`, `propose_fix`
-* **Agent**: `git-sentinel`
+### 1. Maker
+The Maker role is responsible for authoring proposed code modifications and generating automated unified diff patches.
+This role cannot approve or merge its own changes into protected branches.
 
-### 3. Approver (`approver`)
-* **Scope**: Final human sign-off on pull requests or merge actions.
-* **Permissions**: `merge`, `approve_override`
-* **Boundary**: Human repository maintainer (never automated by agent).
+### 2. Checker
+The Checker role is responsible for reviewing, auditing, and validating incoming pull requests and proposed diffs.
+This role operates as an impartial auditor to verify compliance with security benchmarks.
 
-## Conflict Rules
-* An autonomous agent cannot approve its own remediation patches into production without human-in-the-loop review for high-risk changes.
-* All secret remediation patches must require rotation confirmation from the account holder.
+### 3. Approver
+The Approver role is strictly reserved for human repository administrators.
+Human approval is required for all production deployments and high-risk security overrides.
