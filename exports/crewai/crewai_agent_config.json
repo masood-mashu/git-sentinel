@@ -5,10 +5,10 @@
   "verbose": true,
   "allow_delegation": false,
   "tools": [
-    "diff_scanner",
-    "secret_detector",
-    "policy_checker",
-    "patch_generator"
+    "diff-scanner",
+    "secret-detector",
+    "policy-checker",
+    "patch-generator"
   ],
   "passport_metadata": {
     "passport_id": "aps-sentinel-01",

@@ -1,0 +1,26 @@
+name: patch-generator
+description: Synthesizes standard unified diff patches to automatically remediate security flaws and safely externalize secrets to environment variables
+version: 1.0.0
+input_schema:
+  type: object
+  properties:
+    file_path:
+      type: string
+      description: Relative file path being patched
+    original_snippet:
+      type: string
+      description: Original line or snippet containing the violation
+    remediated_snippet:
+      type: string
+      description: Remediated replacement snippet
+  required:
+    - file_path
+    - original_snippet
+    - remediated_snippet
+implementation:
+  type: script
+  path: patch_generator.py
+  runtime: python3
+annotations:
+  read_only: false
+  idempotent: true

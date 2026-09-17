@@ -1,60 +1,41 @@
 spec_version: "0.1.0"
-name: "git-sentinel"
-version: "1.0.0"
-description: "Autonomous Git-native Security, Secret & Compliance Gate Agent with universal multi-framework portability"
+name: git-sentinel
+version: 1.0.0
+description: "Autonomous Git-native Security, Secret & Compliance Gate Agent"
 author: "masood-mashu"
 license: "Apache-2.0"
-
-passport:
-  id: "aps-sentinel-01"
-  type: "domain-worker"
-  track: "custom-clone-workers"
-  capabilities:
-    - "git-diff-analysis"
-    - "secret-entropy-detection"
-    - "compliance-policy-enforcement"
-    - "automated-patch-generation"
-  visas_supported:
-    - "openai-sdk"
-    - "crewai"
-    - "claude-code"
-    - "lyzr"
 
 model:
   preferred: "openai:gpt-4o"
   fallback:
     - "anthropic:claude-3-5-sonnet"
     - "openai:gpt-4o-mini"
-  temperature: 0.1
-
-tools:
-  - name: "diff_scanner"
-    description: "Parses and inspects Git diffs and patch files for vulnerable patterns and risky changes"
-    schema: "tools/diff_scanner.json"
-    entrypoint: "tools/diff_scanner.py"
-  - name: "secret_detector"
-    description: "Scans code and diffs for leaked API keys, tokens, private keys, and high-entropy secrets"
-    schema: "tools/secret_detector.json"
-    entrypoint: "tools/secret_detector.py"
-  - name: "policy_checker"
-    description: "Evaluates repository configurations, dependencies, and license policies against compliance standards"
-    schema: "tools/policy_checker.json"
-    entrypoint: "tools/policy_checker.py"
-  - name: "patch_generator"
-    description: "Synthesizes standard unified diff patches to automatically remediate security flaws and mask secrets"
-    schema: "tools/patch_generator.json"
-    entrypoint: "tools/patch_generator.py"
+  constraints:
+    temperature: 0.1
+    max_tokens: 4096
 
 skills:
-  - "skills/pr_review"
-  - "skills/secret_remediation"
+  - pr-review
+  - secret-remediation
 
-rules:
-  file: "RULES.md"
+tools:
+  - diff-scanner
+  - secret-detector
+  - policy-checker
+  - patch-generator
 
 runtime:
-  max_turns: 30
-  timeout_seconds: 120
-  deterministic: true
-  audit_logging: true
-  memory_dir: "memory"
+  max_turns: 50
+  timeout: 120
+
+tags:
+  - security
+  - compliance
+  - git-native
+  - domain-worker
+  - passport-challenge
+
+metadata:
+  passport_id: "aps-sentinel-01"
+  passport_track: "custom-clone-workers"
+  author_github: "masood-mashu"

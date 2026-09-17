@@ -11,6 +11,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "@open-gitagent/gitagent": "^2.2.0"
+    "@open-gitagent/gitagent": "^2.2.0",
+    "@open-gitagent/opengap": "^0.5.0"
   }
 }

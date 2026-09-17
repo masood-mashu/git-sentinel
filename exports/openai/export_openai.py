@@ -18,17 +18,17 @@ def export_to_openai(root_dir: str) -> Dict[str, Any]:
     system_instructions = f"{soul}\n\n# Operational Rules\n{rules}"
 
     openai_tools: List[Dict[str, Any]] = []
-    for tool_entry in manifest.get("tools", []):
-        schema_path = os.path.join(root_dir, tool_entry["schema"])
-        if os.path.exists(schema_path):
-            with open(schema_path, "r", encoding="utf-8") as sf:
-                tool_schema = json.load(sf)
+    for tool_name in manifest.get("tools", []):
+        tool_yaml_path = os.path.join(root_dir, "tools", f"{tool_name}.yaml")
+        if os.path.exists(tool_yaml_path):
+            with open(tool_yaml_path, "r", encoding="utf-8") as yf:
+                tool_def = yaml.safe_load(yf)
             openai_tools.append({
                 "type": "function",
                 "function": {
-                    "name": tool_schema.get("name", tool_entry["name"]),
-                    "description": tool_schema.get("description", tool_entry["description"]),
-                    "parameters": tool_schema.get("parameters", {})
+                    "name": tool_def.get("name", tool_name).replace("-", "_"),
+                    "description": tool_def.get("description", ""),
+                    "parameters": tool_def.get("input_schema", {})
                 }
             })
 

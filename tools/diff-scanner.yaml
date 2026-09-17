@@ -1,0 +1,21 @@
+name: diff-scanner
+description: Parses and inspects Git diffs or patches to extract changed files, added lines, and high-risk syntax patterns
+version: 1.0.0
+input_schema:
+  type: object
+  properties:
+    diff_text:
+      type: string
+      description: Unified git diff string to analyze
+    max_lines:
+      type: integer
+      description: Maximum number of lines to inspect
+  required:
+    - diff_text
+implementation:
+  type: script
+  path: diff_scanner.py
+  runtime: python3
+annotations:
+  read_only: true
+  idempotent: true

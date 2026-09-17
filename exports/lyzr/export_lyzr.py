@@ -27,11 +27,10 @@ def export_to_lyzr(root_dir: str) -> Dict[str, Any]:
         },
         "tools_registered": [
             {
-                "tool_name": t["name"],
-                "description": t["description"],
-                "schema_file": t["schema"]
+                "tool_name": tool_name,
+                "schema_file": f"tools/{tool_name}.yaml"
             }
-            for t in manifest.get("tools", [])
+            for tool_name in manifest.get("tools", [])
         ],
         "passport": {
             "passport_id": manifest.get("passport", {}).get("id", "aps-sentinel-01"),

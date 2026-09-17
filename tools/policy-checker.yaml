@@ -1,0 +1,26 @@
+name: policy-checker
+description: Evaluates repository configuration, dependency hygiene, and license policies against organizational standards
+version: 1.0.0
+input_schema:
+  type: object
+  properties:
+    repo_files:
+      type: array
+      items:
+        type: string
+      description: List of repository file paths to check for policy violations
+    package_json:
+      type: string
+      description: Optional content of package.json to verify pinned dependencies
+    requirements_txt:
+      type: string
+      description: Optional content of requirements.txt to verify pinned dependencies
+  required:
+    - repo_files
+implementation:
+  type: script
+  path: policy_checker.py
+  runtime: python3
+annotations:
+  read_only: true
+  idempotent: true

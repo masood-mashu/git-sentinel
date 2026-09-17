@@ -21,7 +21,7 @@ def export_to_crewai(root_dir: str) -> Dict[str, Any]:
         "backstory": f"{soul}\n\nStrict Rules of Engagement:\n{rules}",
         "verbose": True,
         "allow_delegation": False,
-        "tools": [t["name"] for t in manifest.get("tools", [])],
+        "tools": list(manifest.get("tools", [])),
         "passport_metadata": {
             "passport_id": manifest.get("passport", {}).get("id", "aps-sentinel-01"),
             "framework_visa": "crewai",
