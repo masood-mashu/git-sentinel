@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "policy_checker",
+  "description": "Evaluates repository configuration, dependency hygiene, and license policies against organizational standards.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "repo_files": {
+        "type": "array",
+        "items": { "type": "string" },
+        "description": "List of repository file paths to check for policy violations"
+      },
+      "package_json": {
+        "type": "string",
+        "description": "Optional content of package.json to verify pinned dependencies"
+      },
+      "requirements_txt": {
+        "type": "string",
+        "description": "Optional content of requirements.txt to verify pinned dependencies"
+      }
+    },
+    "required": ["repo_files"]
+  },
+  "returns": {
+    "type": "object",
+    "properties": {
+      "violations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "policy": { "type": "string" },
+            "status": { "type": "string" },
+            "details": { "type": "string" }
+          }
+        }
+      },
+      "passed": { "type": "boolean" }
+    }
+  }
+}

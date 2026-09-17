@@ -1,0 +1,35 @@
+{
+  "passport_id": "aps-sentinel-01",
+  "agent_name": "git-sentinel",
+  "visas_earned": 4,
+  "total_visa_points": 1000,
+  "visas": [
+    {
+      "visa": "VISA 01 - OpenAI SDK",
+      "status": "VERIFIED",
+      "tools_exported": 4,
+      "output_file": "D:\\hackathon\\gitagent-secops\\exports\\openai\\openai_assistant_spec.json"
+    },
+    {
+      "visa": "VISA 02 - CrewAI",
+      "status": "VERIFIED",
+      "output_files": [
+        "D:\\hackathon\\gitagent-secops\\exports\\crewai\\crewai_agent_config.json",
+        "D:\\hackathon\\gitagent-secops\\exports\\crewai\\crewai_agent.py"
+      ]
+    },
+    {
+      "visa": "VISA 03 - Claude Code",
+      "status": "VERIFIED",
+      "output_files": [
+        "D:\\hackathon\\gitagent-secops\\exports\\claude_code\\CLAUDE.md",
+        "D:\\hackathon\\gitagent-secops\\exports\\claude_code\\claude_desktop_config.json"
+      ]
+    },
+    {
+      "visa": "VISA 04 - Lyzr",
+      "status": "VERIFIED",
+      "output_file": "D:\\hackathon\\gitagent-secops\\exports\\lyzr\\lyzr_agent_config.json"
+    }
+  ]
+}

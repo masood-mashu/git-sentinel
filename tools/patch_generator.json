@@ -1,0 +1,30 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "name": "patch_generator",
+  "description": "Synthesizes standard unified diff patches to automatically remediate security flaws and safely externalize secrets to environment variables.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "file_path": {
+        "type": "string",
+        "description": "Relative file path being patched"
+      },
+      "original_snippet": {
+        "type": "string",
+        "description": "Original line or snippet containing the violation"
+      },
+      "remediated_snippet": {
+        "type": "string",
+        "description": "Remediated replacement snippet"
+      }
+    },
+    "required": ["file_path", "original_snippet", "remediated_snippet"]
+  },
+  "returns": {
+    "type": "object",
+    "properties": {
+      "unified_diff": { "type": "string" },
+      "git_apply_ready": { "type": "boolean" }
+    }
+  }
+}

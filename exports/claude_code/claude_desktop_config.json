@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "git-sentinel": {
+      "command": "python",
+      "args": [
+        "-m",
+        "tools.diff_scanner"
+      ],
+      "env": {
+        "GIT_SENTINEL_PASSPORT": "aps-sentinel-01"
+      }
+    }
+  }
+}
